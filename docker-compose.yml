@@ -1,9 +1,12 @@
-version: '3'
+version: '4.0'
 services:
   vprodb:
     build:
       context: ./Docker-files/db
-    image: vprodb
+    #image of repository in dockerhub
+    #image: Specifies the name of the Docker image to build.
+    image: rdemo123/vprofiledb
+    #  Specifies the name of the Docker container that will be created from this image
     container_name: vprodb
     ports:
       - "3306:3306"
@@ -11,12 +14,10 @@ services:
       - vprodbdata:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=vprodbpass
-
   vprocache01:
     image: memcached
     ports:
       - "11211:11211"
-
   vpromq01:
     image: rabbitmq
     ports:
@@ -28,20 +29,22 @@ services:
   vproapp:
     build:
       context: ./Docker-files/app
-    image: vproapp
+    image: rdemo123/vprofileapp
     container_name: vproapp
     ports:
       - "8080:8080"
-    volumes: 
+    volumes:
       - vproappdata:/usr/local/tomcat/webapps
 
   vproweb:
     build:
       context: ./Docker-files/web
-    image: vproweb
+    image: rdemo123/vprofileweb
     container_name: vproweb
     ports:
       - "80:80"
 volumes:
-  vprodbdata: {}
+  vprodbdata: {}  #{} allows to create volume in the docker engine itself
   vproappdata: {}
+# what happens
+# when we run Docker compose its going to create these volumes first and then while building these containers its going to map these volumes wherever specified means in vproapp vprodb
